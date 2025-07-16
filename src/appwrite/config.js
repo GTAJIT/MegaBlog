@@ -5,6 +5,7 @@ export class Service {
   client = new Client();
   databases;
   bucket;
+  ID;
 
   constructor() {
     this.client
@@ -14,8 +15,11 @@ export class Service {
     this.bucket = new Storage(this.client);
   }
 
-  async createPost({ title, slug, content, featuredImage, status, userId }) {
+  async createPost({ title, slug, content, featuredimage, status, userId }) {
     try {
+      if (!slug) {
+        throw new Error("Missing slug for createPost");
+      }
       return await this.databases.createDocument(
         conf.appwriteDBId,
         conf.appwriteCollectionId,
@@ -23,17 +27,18 @@ export class Service {
         {
           title,
           content,
-          featuredImage,
+          featuredimage: featuredimage,
           status,
-          userId,
+          userid: userId,
         }
       );
     } catch (error) {
-      console.log("Appwrite serive :: createPost :: error", error);
+      console.log("Appwrite service :: createPost :: error", error);
+      return null;
     }
   }
 
-  async updatePost(slug, { title, content, featuredImage, status }) {
+  async updatePost(slug, { title, content, featuredimage, status }) {
     try {
       return await this.databases.updateDocument(
         conf.appwriteDBId,
@@ -42,12 +47,13 @@ export class Service {
         {
           title,
           content,
-          featuredImage,
+          featuredimage,
           status,
         }
       );
     } catch (error) {
-      console.log("Appwrite serive :: updatePost :: error", error);
+      console.log("Appwrite service :: updatePost :: error", error);
+      return null;
     }
   }
 
@@ -117,7 +123,12 @@ export class Service {
   }
 
   getFilePreview(fileId) {
-    return this.bucket.getFilePreview(conf.appwriteBucketId, fileId);
+    if (!fileId) {
+      console.warn("getFilePreview called with empty fileId");
+      return null;
+    }
+    // console.log(conf.appwriteBucketId, fileId, "featuredImage-fileid")
+    return this.bucket.getFilePreview(conf.appwriteBucketId ,fileId) + '&mode=admin';
   }
 }
 
