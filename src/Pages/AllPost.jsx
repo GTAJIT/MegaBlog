@@ -11,13 +11,16 @@ function AllPosts() {
             }
         });
     }, []);
+    // console.log(posts, "posts")
     return (
-        <div className='w-full py-8'>
+        <div className='w-full'>
             <Container>
-                <div className='flex flex-wrap'>
+                <h1 className='text-2xl mb-2 ml-5 text-start font-bold text-gray-900'>All Posts</h1>
+                <div className='flex flex-wrap justify-start items-start'>
                     {posts.map((post) => (
-                        <div key={post.$id} className='p-2 w-1/4'>
+                        <div key={post.$id} className='px-5 w-1/4'>
                             <PostCard {...post} />
+                            {/* {console.log(post, "post")} */}
                             {/* {console.log(post.featuredimage, "featuredImage")} */}
                         </div>
                     ))}
