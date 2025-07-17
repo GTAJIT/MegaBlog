@@ -10,10 +10,10 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
         <div className="flex items-center md:mb-0">
           <Logo width="100px" />
-          {/* <span className="font-bold text-xl">MegaBlog</span> */}
+          {/* <span className="font-bold text-xl">Pawlogy</span> */}
         </div>
         <div className="text-center text-sm">
-          &copy; {new Date().getFullYear()} MegaBlog. All rights reserved.
+          &copy; {new Date().getFullYear()} Pawlogy. All rights reserved.
         </div>
         <div className="flex space-x-4">
           <a href="https://github.com/GTAJIT" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-300 transition">

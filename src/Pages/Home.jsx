@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <main className="w-full">
       <Container>
-        {/* <Test /> */}
+        {/* //login validate */}
         <HeroSection />
         <BlogsShow />
       </Container>

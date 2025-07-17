@@ -22,8 +22,6 @@ export default function Post() {
       appwriteService.getPost(slug).then((post) => {
         if (post) {
           setPost(post);
-
-          // 👇 fetch the author info
           authService.getUserById(post.userid).then((user) => {
             if (user) setAuthor(user);
           });
