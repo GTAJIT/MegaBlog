@@ -23,7 +23,7 @@ export default function BlogsShow() {
     return (
         <section className="w-full py-12">
             <div className="max-w-7xl flex flex-col text-start mx-auto">
-                <h1 className="text-2xl mb-2 text-start font-bold text-gray-900">
+                <h1 className="text-2xl mb-2 text-center font-bold text-gray-900">
                     Trending Blogs
                 </h1>
 
