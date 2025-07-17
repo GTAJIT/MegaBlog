@@ -1,8 +1,16 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import appwriteService from "../appwrite/config"
 import { Link } from 'react-router-dom'
+import authService from '../appwrite/auth'
 
-function PostCard({ $id, title, featuredimage, content, createdUser, createdAt }) {
+
+function PostCard({ $id, title, featuredimage, content, userid, status }) {
+  const [author, setAuthor] = useState(null);
+  useEffect(() => {
+    authService.getUserById(userid).then((user) => {
+      setAuthor(user);
+    });
+  }, [userid]);
   return (
     <Link to={`/post/${$id}`}>
       <div className="relative max-w-md rounded-xl bg-[#181f2a] shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col border border-[#232b3b7b] group">
@@ -20,7 +28,7 @@ function PostCard({ $id, title, featuredimage, content, createdUser, createdAt }
         </div>
         <div className="p-4 bottom-0 absolute flex flex-col text-start">
           <h2 className="text-lg font-bold text-white">{title || "NA.."}</h2>
-          <p className='text-xs text-gray-300 font-medium mt-auto'>Created by <span className="text-xs text-blue-300 font-medium mt-auto"> {createdUser || "Unknown"}</span> At<span className='text-xs text-blue-300 font-medium mt-auto'> {createdAt || "NA.."}</span></p>
+          <p className='text-xs text-gray-300 font-medium mt-auto'>Created by <span className="text-xs text-blue-300 font-medium mt-auto">{author?.name || "Unknown"}</span> This post is <span className='text-xs text-blue-300 font-medium mt-auto'>{status || "NA.."}</span></p>
         </div>
       </div>
     </Link>

@@ -4,9 +4,12 @@ import appwriteService from "../appwrite/config";
 import { Container } from "../components";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
+import authService from "../appwrite/auth";
 
 export default function Post() {
   const [post, setPost] = useState(null);
+  const [author, setAuthor] = useState(null); // 👈 for user object
+
   const { slug } = useParams();
   const navigate = useNavigate();
 
@@ -17,10 +20,20 @@ export default function Post() {
   useEffect(() => {
     if (slug) {
       appwriteService.getPost(slug).then((post) => {
-        if (post) setPost(post);
-        else navigate("/");
+        if (post) {
+          setPost(post);
+
+          // 👇 fetch the author info
+          authService.getUserById(post.userid).then((user) => {
+            if (user) setAuthor(user);
+          });
+        } else {
+          navigate("/");
+        }
       });
-    } else navigate("/");
+    } else {
+      navigate("/");
+    }
   }, [slug, navigate]);
 
   const deletePost = () => {
@@ -36,32 +49,34 @@ export default function Post() {
     <div className="py-8 w-full">
       <Container>
         <div className="flex justify-start items-start">
-          <div className="w-5xl flex mb-4 relative  border rounded-xl p-2">
+          <div className="w-5xl flex mb-4 relative border rounded-xl p-2">
             <img
               src={appwriteService.getFilePreview(post.featuredimage)}
               alt={post.title}
               className="rounded-xl object-cover w-full"
             />
-            <div className="">
-              {isAuthor ? (
-                <div className="absolute right-6 top-6">
-                  <Link to={`/edit-post/${post.$id}`}>
-                    <button className="px-6 py-2 bg-green-500 text-white rounded-full font-semibold shadow-md hover:bg-white hover:text-green-600ition-all duration-200 focus:ring-2 focus:ring-green-400 mr-3">
-                      Edit
-                    </button>
-                  </Link>
-                  <button onClick={deletePost} className="px-6 py-2 bg-red-500 text-white rounded-full font-semibold shadow-md hover:bg-white hover:text-red-600ition-all duration-200 focus:ring-2focus:ring-red-400">
-                    Delete
+            {isAuthor && (
+              <div className="absolute right-6 top-6">
+                <Link to={`/edit-post/${post.$id}`}>
+                  <button className="px-6 py-2 bg-green-500 text-white rounded-full font-semibold shadow-md hover:bg-white hover:text-green-600 transition-all duration-200 focus:ring-2 focus:ring-green-400 mr-3">
+                    Edit
                   </button>
-                </div>
-              ) : null}
-            </div>
+                </Link>
+                <button
+                  onClick={deletePost}
+                  className="px-6 py-2 bg-red-500 text-white rounded-full font-semibold shadow-md hover:bg-white hover:text-red-600 transition-all duration-200 focus:ring-2 focus:ring-red-400"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
           <div className="w-full mb-6 flex flex-col justify-start items-start ml-5 text-start gap-2">
             <h1 className="text-5xl font-bold">{post.title}</h1>
-            <h1 className="text-xl font-bold">It's created by {post.createdBy || "Unknown"}</h1>
+            <h1 className="text-xl font-bold">
+              It's created by {author?.name || "Unknown"}
+            </h1>
             <h1 className="text-xl font-bold">It's {post.status || "NA..."}</h1>
-            {/* {console.log(post.status)} */}
             <div className="browser-css">{parse(post.content)}</div>
           </div>
         </div>
@@ -69,3 +84,4 @@ export default function Post() {
     </div>
   ) : null;
 }
+

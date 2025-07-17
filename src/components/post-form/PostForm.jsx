@@ -8,21 +8,21 @@ import Select from "../Select";
 import RTE from "../RTE";
 
 export default function PostForm({ post }) {
-  const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
+  const { register, handleSubmit, watch, setValue, control, formState: { errors, defaultValues, isSubmitting } } = useForm({
     defaultValues: {
       title: post?.title || "",
       slug: post?.$id || "",
       content: post?.content || "",
       status: post?.status || "active",
       fileId: post?.featuredimage || "",
-      createdBy: post?.createdBy || "Unknown",
+      name: post?.name || "Unknown",
     },
   });
 
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
 
-  console.log(userData.name)
+  // console.log(userData.name)
 
   /**
    * Slug transform utility
@@ -93,6 +93,8 @@ export default function PostForm({ post }) {
 
         data.featuredimage = file.$id;
         data.fileId = file.$id;
+        data.userid = userData?.$id;
+        data.name = userData?.name;
 
         // Ensure slug is valid
         const safeSlug = slugTransform(data.slug);
@@ -104,6 +106,7 @@ export default function PostForm({ post }) {
 
         const newPost = await appwriteService.createPost({
           userId: userData?.$id,
+          name: userData?.name,
           ...data,
         });
 
@@ -135,11 +138,12 @@ export default function PostForm({ post }) {
             {...register("title", { required: true })}
           />
           <RTE
-            label="Content"
             name="content"
             control={control}
-            defaultValue={getValues("content")}
+            label="Content"
+            defaultValue={defaultValues.content || ""}
           />
+          {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content.message}</p>}
         </div>
 
         {/* Right: Meta & Image */}
@@ -168,10 +172,14 @@ export default function PostForm({ post }) {
           )}
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full px-6 py-3 bg-indigo-600 text-white rounded-full font-semibold shadow-md hover:bg-indigo-700 transition-all duration-200 focus:ring-2 focus:ring-indigo-400"
           >
             {post ? "Update" : "Submit"}
           </button>
+          <p className="text-sm text-gray-500">
+            {isSubmitting ? "Submitting..." : "???"}
+          </p>
         </div>
       </form>
     </div>

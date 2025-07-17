@@ -4,12 +4,14 @@ import { Client, Account, ID } from "appwrite";
 export class AuthService {
   client = new Client();
   account;
+  users;
 
   constructor() {
     this.client
       .setEndpoint(conf.appwriteUrl)
       .setProject(conf.appwriteProjectId);
     this.account = new Account(this.client);
+    // this.users = new this.users(this.client);
   }
 
   async createAccount({ email, password, name }) {
@@ -72,6 +74,14 @@ export class AuthService {
   async logOutCurrent() {
     try {
       await this.account.deleteSession("session");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async getUserById(userId) {
+    try {
+      const user = await this.account.get(userId);
+      return user;
     } catch (error) {
       console.log(error);
     }

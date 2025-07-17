@@ -1,50 +1,38 @@
+import React, { useMemo } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import React from "react";
 import { Controller } from "react-hook-form";
 import conf from "../conf/conf";
 
-export default function RTE({ name, control, lable, defaultValue = "" }) {
+export default function RTE({ name = "content", control, defaultValue = "" }) {
+  // Memoize TinyMCE init config
+  const editorInit = useMemo(() => ({
+    height: 500,
+    menubar: true,
+    plugins: [
+      "advlist", "autolink", "lists", "link", "image", "charmap",
+      "preview", "anchor", "searchreplace", "visualblocks", "code",
+      "fullscreen", "insertdatetime", "media", "table", "help", "wordcount"
+    ],
+    toolbar:
+      "undo redo | blocks | bold italic forecolor | " +
+      "alignleft aligncenter alignright alignjustify | " +
+      "bullist numlist outdent indent | removeformat | help | image",
+    content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }"
+  }), []);
+
   return (
     <div className="w-full">
-      {lable && <lable className="inline-block mb-1 pl-1">{lable}</lable>}
       <Controller
-        name={name || "content"}
+        name={name}
         control={control}
-        render={({ field: { onChange } }) => (
+        defaultValue={defaultValue}
+        // eslint-disable-next-line no-unused-vars
+        render={({ field: { onChange, value } }) => (
           <Editor
+            id={name}
             apiKey={conf.TineyMCEAPI}
             initialValue={defaultValue}
-            init={{
-              initialValue: defaultValue,
-              height: 500,
-              menubar: true,
-              plugins: [
-                "image",
-                "advlist",
-                "autolink",
-                "lists",
-                "link",
-                "image",
-                "charmap",
-                "preview",
-                "anchor",
-                "searchreplace",
-                "visualblocks",
-                "code",
-                "fullscreen",
-                "insertdatetime",
-                "media",
-                "table",
-                "code",
-                "help",
-                "wordcount",
-                "anchor",
-              ],
-              toolbar:
-                "undo redo | blocks | image | bold italic forecolor | alignleft aligncenter bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent |removeformat | help",
-              content_style:
-                "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-            }}
+            init={editorInit}
             onEditorChange={onChange}
           />
         )}
