@@ -1,5 +1,6 @@
 import conf from "../conf/conf.js";
 import { Client, ID, Databases, Storage, Query } from "appwrite";
+// import authService, { AuthService } from "./auth.js";
 
 export class Service {
   client = new Client();
@@ -82,9 +83,10 @@ export class Service {
       console.log("Appwrite serive :: getPost :: error", error);
       return false;
     }
-  }
+  } 
 
   async getPosts(queries = [Query.equal("status", "active")]) {
+    // console.log(AuthService.caller(), "user")
     try {
       return await this.databases.listDocuments(
         conf.appwriteDBId,
@@ -92,8 +94,9 @@ export class Service {
         queries
       );
     } catch (error) {
-      console.log("Appwrite serive :: getPosts :: error", error);
-      return false;
+      console.log("Appwrite service :: getPosts :: error", error);
+      // Return empty result instead of false for better UX
+      return { documents: [] };
     }
   }
 

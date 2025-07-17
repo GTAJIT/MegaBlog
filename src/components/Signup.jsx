@@ -27,30 +27,19 @@ function Signup() {
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <div
-        className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}
-      >
-        <div className="mb-2 flex justify-center">
-          <span className="inline-block w-full max-w-[100px]">
+    <div className="flex items-center justify-center w-full min-h-[80vh]">
+      <div className="mx-auto w-full max-w-lg bg-white/10 backdrop-blur-lg rounded-xl p-10 shadow-lg">
+        <div className="flex justify-center">
+          <span className="inline-block w-full">
             <Logo width="100%" />
           </span>
         </div>
-        <h2 className="text-center text-2xl font-bold leading-tight">
+        <h2 className="text-center text-3xl font-extrabold text-indigo-800 mb-2">
           Sign up to create an account
         </h2>
-        <p className="mt-2 text-center text-base text-black/60">
-          Already hvae an account?&nbsp;
-          <Link
-            to="/signup"
-            className="font-medium text-primary transition-all duration-200 hover:underline"
-          >
-            Sign In
-          </Link>
-        </p>
-        {error && <p className="to-red-600 mt-8 text-center">{error}</p>}
-        <form onSubmit={handleSubmit(Signup)}>
-          <div className="space-y-5">
+        {error && <p className="text-red-500 mt-6 text-center">{error}</p>}
+        <form onSubmit={handleSubmit(Signup)} className="mt-8">
+          <div className="space-y-6">
             <Input
               label="Name: "
               placeholder="Enter your Full Name"
@@ -69,16 +58,25 @@ function Signup() {
                 },
               })}
             />
-            <Input 
-                label='Password: '
-                type='password'
-                placeholder='Enter your Password'
-                {...register("password", {
-                    required: true,
-                })} 
+            <Input
+              label="Password: "
+              type="password"
+              placeholder="Enter your Password"
+              {...register("password", {
+                required: true,
+              })}
             />
-            <button type="submit" className="w-full">Create Account</button>
+            <Button type="submit" className="w-full">Create Account</Button>
           </div>
+        <p className="mt-2 text-center text-base text-gray-500">
+          Already have an account?&nbsp;
+          <Link
+            to="/login"
+            className="font-semibold text-indigo-600 hover:underline"
+          >
+            Sign In
+          </Link>
+        </p>
         </form>
       </div>
     </div>
